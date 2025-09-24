@@ -1,9 +1,19 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
+import { useUser } from "../../context/UserContext";
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { isLoggedIn, user } = useUser();
+  const navigate = useNavigate();
+
+  // 🔑 Redirect if not logged in
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/auth/signup");
+    }
+  }, [isLoggedIn, navigate]);
 
   return (
     <nav className="fixed top-0 z-50 w-full bg-white/10 backdrop-blur-md border-b border-white/20 shadow-md transition-all duration-300">
@@ -14,7 +24,7 @@ export const Navbar = () => {
             to="/"
             className="text-2xl font-extrabold text-white tracking-wide hover:scale-105 transition-transform"
           >
-            <span className="text-green-500"> Plant</span>Verse
+            <span className="text-green-500">Plant</span>Verse
           </Link>
 
           {/* Desktop Menu */}
