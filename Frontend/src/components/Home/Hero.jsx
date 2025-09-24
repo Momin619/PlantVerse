@@ -47,6 +47,7 @@ const Hero = () => {
             transition-all duration-300 w-full sm:w-auto text-center
             hover:shadow-[0_0_20px_#22c55e] hover:border-green-400 hover:text-white hover:bg-green-500 text-base sm:text-lg"
           >
+            {" "}
             Learn More
           </Link>
         </div>
