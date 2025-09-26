@@ -1,19 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
 import { useUser } from "../../context/UserContext";
+import { api } from "../../services/api/api";
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isLoggedIn, user } = useUser();
+  const { isLoggedIn, user, setIsLoggedIn, setUser } = useUser();
   const navigate = useNavigate();
 
-  // 🔑 Redirect if not logged in
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/auth/signup");
+  // 🔑 Logout handler
+  const handleLogout = async () => {
+    try {
+      await api.post("/logout");
+      setUser(null);
+      setIsLoggedIn(false);
+      navigate("/auth/login");
+    } catch (err) {
+      console.error("Logout failed:", err);
     }
-  }, [isLoggedIn, navigate]);
+  };
 
   return (
     <nav className="fixed top-0 z-50 w-full bg-white/10 backdrop-blur-md border-b border-white/20 shadow-md transition-all duration-300">
@@ -28,7 +34,7 @@ export const Navbar = () => {
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-8 text-lg font-medium">
+          <div className="hidden md:flex space-x-8 text-lg font-medium items-center">
             {["Home", "Products", "Cart", "About"].map((item) => (
               <Link
                 key={item}
@@ -39,6 +45,23 @@ export const Navbar = () => {
                 <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-green-200 transition-all duration-300 group-hover:w-full"></span>
               </Link>
             ))}
+
+            {/* Show Logout if logged in, otherwise Login */}
+            {isLoggedIn ? (
+              <button
+                onClick={handleLogout}
+                className="ml-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                to="/auth/login"
+                className="ml-6 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+              >
+                Login
+              </Link>
+            )}
           </div>
 
           {/* Mobile Hamburger */}
@@ -70,6 +93,26 @@ export const Navbar = () => {
               {item}
             </Link>
           ))}
+
+          {isLoggedIn ? (
+            <button
+              onClick={() => {
+                handleLogout();
+                setIsOpen(false);
+              }}
+              className="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+            >
+              Logout
+            </button>
+          ) : (
+            <Link
+              to="/auth/login"
+              className="block w-full text-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+              onClick={() => setIsOpen(false)}
+            >
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </nav>
