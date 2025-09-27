@@ -59,3 +59,43 @@ export const postLogout = async (req, res, next) => {
     console.log(error);
   }
 };
+
+export const postAdminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // 1️⃣ Find the admin
+    const user = await User.findOne({ email, role: "admin" });
+    if (!user) {
+      return res.status(401).json({ message: "Admin not found" });
+    }
+
+    // 2️⃣ Check password (await is needed!)
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Password doesn't match" });
+    }
+
+    // 3️⃣ Prepare user data for session
+    const userData = {
+      id: user._id,
+      name: user.fullName || user.name,
+      email: user.email,
+      role: user.role,
+    };
+
+    // 4️⃣ Save session
+    req.session.user = userData;
+    req.session.isLoggedIn = true;
+    await req.session.save();
+
+    // 5️⃣ Respond
+    return res.status(200).json({
+      user: req.session.user,
+      isLoggedIn: req.session.isLoggedIn,
+    });
+  } catch (error) {
+    console.error("Admin login error:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
