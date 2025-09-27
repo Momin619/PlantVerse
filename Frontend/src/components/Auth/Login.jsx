@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useUser } from "../../context/UserContext";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 const Login = () => {
   const { user, setUser, isLoggedIn, setIsLoggedIn } = useUser();
   const [loading, setLoading] = useState(false);
@@ -21,20 +22,18 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     setLoading(true);
-    console.log(data);
-
     try {
       const res = await api.post("/auth/login", data);
       setUser(res.data.user);
       setIsLoggedIn(res.data.isLoggedIn);
+      toast.success("Login successful! Welcome back 🌱");
       redirect("/");
     } catch (error) {
-      console.log(error);
+      toast.error(error.response?.data?.message || "Login failed ❌");
     } finally {
       setLoading(false);
     }
   };
-
   if (loading) return <Loader />;
 
   return (

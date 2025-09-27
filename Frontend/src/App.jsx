@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./styles/output.css";
 import HomePage from "./pages/Home/HomePage";
 import SignupPage from "./pages/Auth/Signup/SignupPage";
@@ -40,11 +42,24 @@ export default function App() {
   if (loading) return <Loader />;
 
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/auth/signup" element={<SignupPage />} />
-      <Route path="/auth/login" element={<LoginPage />} />
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/auth/signup" element={<SignupPage />} />
+        <Route path="/auth/login" element={<LoginPage />} />
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark" // optional
+      />
+    </>
   );
 }

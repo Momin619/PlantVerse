@@ -4,6 +4,7 @@ import { HiMenu, HiX } from "react-icons/hi";
 import { useUser } from "../../context/UserContext";
 import { api } from "../../services/api/api";
 import Loader from "../ui/Loader";
+import { toast } from "react-toastify";
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { isLoggedIn, user, setIsLoggedIn, setUser } = useUser();
@@ -17,9 +18,10 @@ export const Navbar = () => {
       await api.post("/auth/logout");
       setUser(null);
       setIsLoggedIn(false);
+      toast.info("You’ve been logged out 👋");
       navigate("/auth/login");
     } catch (err) {
-      console.error("Logout failed:", err);
+      toast.error("Logout failed ❌");
     } finally {
       setLoading(false);
     }

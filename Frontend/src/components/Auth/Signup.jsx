@@ -5,6 +5,7 @@ import { useState } from "react";
 import Loader from "../ui/Loader";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { toast } from "react-toastify";
 export default function Signup() {
   const redirect = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -16,16 +17,16 @@ export default function Signup() {
     watch,
     formState: { errors, isSubmitting },
   } = useForm({ mode: "onChange" });
+
   const onSubmit = async (data) => {
     delete data.confirmPassword;
     setLoading(true);
     try {
-      console.log("submitting the form", data);
-
       const res = await api.post("/auth/signup", data);
+      toast.success("Account created 🎉 Please login");
       redirect("/auth/login");
     } catch (error) {
-      console.log(error);
+      toast.error(error.response?.data?.message || "Signup failed ❌");
     } finally {
       setLoading(false);
     }
