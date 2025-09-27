@@ -1,15 +1,19 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
 import { useUser } from "../../context/UserContext";
 import { api } from "../../services/api/api";
 import Loader from "../ui/Loader";
 import { toast } from "react-toastify";
+
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { isLoggedIn, user, setIsLoggedIn, setUser } = useUser();
   const navigate = useNavigate();
+  const location = useLocation(); // <-- for route checking
   const [loading, setLoading] = useState(false);
+
+  const isAdminRoute = location.pathname.startsWith("/admin");
 
   // 🔑 Logout handler
   const handleLogout = async () => {
@@ -19,7 +23,7 @@ export const Navbar = () => {
       setUser(null);
       setIsLoggedIn(false);
       toast.info("You’ve been logged out 👋");
-      navigate("/auth/login");
+      navigate(isAdminRoute ? "/auth/admin-login" : "/auth/login");
     } catch (err) {
       toast.error("Logout failed ❌");
     } finally {
@@ -29,43 +33,84 @@ export const Navbar = () => {
 
   if (loading) return <Loader />;
 
+  // Define menu items based on role
+  const commonRoutes = ["Home", "Products", "Cart", "About"];
+  const adminRoutes = ["Dashboard", "Add-Product"];
+
+  // Dynamic styles
+  const navBg = isAdminRoute ? "bg-white" : "bg-white/10 backdrop-blur-md";
+  const linkColor = isAdminRoute
+    ? "text-black hover:text-green-600"
+    : "text-white hover:text-green-200";
+
   return (
-    <nav className="fixed top-0 z-50 w-full bg-white/10 backdrop-blur-md border-b border-white/20 shadow-md transition-all duration-300">
+    <nav
+      className={`fixed top-0 z-50 w-full border-b border-white/20 shadow-md transition-all duration-300 ${navBg}`}
+    >
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
           <Link
             to="/"
-            className="text-2xl font-extrabold text-white tracking-wide hover:scale-105 transition-transform"
+            className={`text-2xl font-extrabold tracking-wide hover:scale-105 transition-transform ${
+              isAdminRoute ? "text-black" : "text-white"
+            }`}
           >
             <span className="text-green-500">Plant</span>Verse
           </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8 text-lg font-medium items-center">
-            {["Home", "Products", "Cart", "About"].map((item) => (
-              <Link
-                key={item}
-                to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                className="relative text-white hover:text-green-200 transition-colors group"
-              >
-                {item}
-                <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-green-200 transition-all duration-300 group-hover:w-full"></span>
-              </Link>
-            ))}
+            {isLoggedIn && user?.role === "admin"
+              ? adminRoutes.map((item) => (
+                  <Link
+                    key={item}
+                    to={
+                      item === "Dashboard"
+                        ? "/admin/dashboard"
+                        : "/admin/add-product"
+                    }
+                    className={`relative ${linkColor} transition-colors group`}
+                  >
+                    {item}
+                    <span
+                      className={`absolute left-0 -bottom-1 w-0 h-[2px] bg-green-200 transition-all duration-300 group-hover:w-full`}
+                    ></span>
+                  </Link>
+                ))
+              : commonRoutes.map((item) => (
+                  <Link
+                    key={item}
+                    to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+                    className={`relative ${linkColor} transition-colors group`}
+                  >
+                    {item}
+                    <span
+                      className={`absolute left-0 -bottom-1 w-0 h-[2px] bg-green-200 transition-all duration-300 group-hover:w-full`}
+                    ></span>
+                  </Link>
+                ))}
 
             {/* Show Logout if logged in, otherwise Login */}
             {isLoggedIn ? (
               <button
                 onClick={handleLogout}
-                className="cursor-pointer ml-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                className={`cursor-pointer ml-2 px-4 py-2 rounded-lg transition ${
+                  isAdminRoute
+                    ? "bg-red-500 text-white hover:bg-red-600"
+                    : "bg-red-500 text-white hover:bg-red-600"
+                }`}
               >
                 Logout
               </button>
             ) : (
               <Link
-                to="/auth/login"
-                className="ml-6 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+                to={isAdminRoute ? "/auth/admin-login" : "/auth/login"}
+                className={`ml-6 px-4 py-2 rounded-lg transition ${
+                  isAdminRoute
+                    ? "bg-green-500 text-white hover:bg-green-600"
+                    : "bg-green-500 text-white hover:bg-green-600"
+                }`}
               >
                 Login
               </Link>
@@ -76,9 +121,19 @@ export const Navbar = () => {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="focus:outline-none text-white"
+              className="focus:outline-none"
             >
-              {isOpen ? <HiX size={28} /> : <HiMenu size={28} />}
+              {isOpen ? (
+                <HiX
+                  size={28}
+                  className={isAdminRoute ? "text-black" : "text-white"}
+                />
+              ) : (
+                <HiMenu
+                  size={28}
+                  className={isAdminRoute ? "text-black" : "text-white"}
+                />
+              )}
             </button>
           </div>
         </div>
@@ -86,21 +141,36 @@ export const Navbar = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden bg-white/10 backdrop-blur-md text-white border-t border-white/20 transition-all duration-300 overflow-hidden ${
-          isOpen ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
-        }`}
+        className={`md:hidden transition-all duration-300 overflow-hidden ${
+          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        } ${navBg}`}
       >
         <div className="px-6 pt-4 pb-6 space-y-4">
-          {["Home", "Products", "Cart", "About"].map((item) => (
-            <Link
-              key={item}
-              to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-              className="block text-lg font-medium hover:text-green-300 transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              {item}
-            </Link>
-          ))}
+          {isLoggedIn && user?.role === "admin"
+            ? adminRoutes.map((item) => (
+                <Link
+                  key={item}
+                  to={
+                    item === "Dashboard"
+                      ? "/admin/dashboard"
+                      : "/admin/add-product"
+                  }
+                  className={`block text-lg font-medium transition-colors ${linkColor}`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {item}
+                </Link>
+              ))
+            : commonRoutes.map((item) => (
+                <Link
+                  key={item}
+                  to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+                  className={`block text-lg font-medium transition-colors ${linkColor}`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {item}
+                </Link>
+              ))}
 
           {isLoggedIn ? (
             <button
@@ -108,14 +178,22 @@ export const Navbar = () => {
                 handleLogout();
                 setIsOpen(false);
               }}
-              className="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+              className={`w-full px-4 py-2 rounded-lg transition ${
+                isAdminRoute
+                  ? "bg-red-500 text-white hover:bg-red-600"
+                  : "bg-red-500 text-white hover:bg-red-600"
+              }`}
             >
               Logout
             </button>
           ) : (
             <Link
-              to="/auth/login"
-              className="block w-full text-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+              to={isAdminRoute ? "/auth/admin-login" : "/auth/login"}
+              className={`block w-full text-center px-4 py-2 rounded-lg transition ${
+                isAdminRoute
+                  ? "bg-green-500 text-white hover:bg-green-600"
+                  : "bg-green-500 text-white hover:bg-green-600"
+              }`}
               onClick={() => setIsOpen(false)}
             >
               Login
