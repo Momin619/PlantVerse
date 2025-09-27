@@ -17,6 +17,8 @@ env.config();
 
 import authRouter from "./routes/auth.js";
 
+import productRouter from "./routes/product.js";
+
 const PORT = process.env.PORT;
 
 const MONGO_URI = process.env.MONGO_URI;
@@ -64,6 +66,7 @@ app.get("/user-auth", (req, res) => {
 app.use(express.json());
 
 app.use(authRouter);
+app.use(productRouter);
 
 mongoose
   .connect(MONGO_URI)

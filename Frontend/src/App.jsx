@@ -11,7 +11,7 @@ import AdminLoginPage from "./pages/Auth/Admin/AdminLoginPage";
 import AdminDashboardPage from "./pages/Admin/AdminDashboardPage";
 import UserProfilePage from "./pages/User/UserProfilePage";
 import PageNotFound from "./components/ui/PageNotFound";
-
+import AddProductPage from "./pages/Admin/AddProductPage";
 export default function App() {
   const loading = useSessionCheck();
 
@@ -41,6 +41,14 @@ export default function App() {
         element={
           <AdminRoute>
             <AdminDashboardPage />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/add-product"
+        element={
+          <AdminRoute>
+            <AddProductPage />
           </AdminRoute>
         }
       />
