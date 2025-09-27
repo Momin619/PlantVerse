@@ -99,3 +99,11 @@ export const postAdminLogin = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+// middleware/adminAuth.js
+export const isAdmin = (req, res, next) => {
+  if (req.session.user && req.session.user.role === "admin") {
+    return next();
+  }
+  return res.status(403).json({ message: "Access denied. Admins only." });
+};

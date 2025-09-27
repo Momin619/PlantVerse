@@ -7,7 +7,7 @@ import {
   postAdminLogin,
 } from "../controller/auth.js";
 
-const authRouter = express();
+const authRouter = express.Router();
 
 authRouter.post("/auth/signup", postSignUp);
 authRouter.post("/auth/login", postLogin);
