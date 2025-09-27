@@ -1,8 +1,8 @@
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { api } from "../../services/api/api";
+import { api } from "../../../services/api/api";
 import { useState } from "react";
-import Loader from "../ui/Loader";
+import Loader from "../../ui/Loader";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";

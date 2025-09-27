@@ -3,8 +3,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./styles/output.css";
 import HomePage from "./pages/Home/HomePage";
-import SignupPage from "./pages/Auth/Signup/SignupPage";
-import LoginPage from "./pages/Auth/Login/LoginPage";
+import SignupPage from "./pages/Auth/User/Signup/SignupPage";
+import LoginPage from "./pages/Auth/User/Login/LoginPage";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { api } from "./services/api/api";
 import { useUser } from "./context/UserContext";
@@ -58,7 +58,10 @@ export default function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="dark" // optional
+        theme="dark"
+        toastClassName="sm:text-sm text-xs w-auto max-w-[90%] md:max-w-sm rounded-lg shadow-lg"
+        bodyClassName="font-medium"
+        containerClassName="p-2"
       />
     </>
   );

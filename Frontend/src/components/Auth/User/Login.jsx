@@ -1,11 +1,11 @@
 import { useState } from "react";
 
 import { useForm } from "react-hook-form";
-import { api } from "../../services/api/api";
-import Loader from "../ui/Loader";
+import { api } from "../../../services/api/api";
+import Loader from "../../ui/Loader";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useUser } from "../../context/UserContext";
+import { useUser } from "../../../context/UserContext";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 const Login = () => {
