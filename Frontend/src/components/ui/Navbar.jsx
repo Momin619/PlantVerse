@@ -12,7 +12,7 @@ export const Navbar = () => {
   // 🔑 Logout handler
   const handleLogout = async () => {
     try {
-      await api.post("/logout");
+      await api.post("/auth/logout");
       setUser(null);
       setIsLoggedIn(false);
       navigate("/auth/login");

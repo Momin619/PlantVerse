@@ -45,3 +45,17 @@ export const postLogin = async (req, res, next) => {
     console.log(error);
   }
 };
+
+export const postLogout = async (req, res, next) => {
+  try {
+    req.session.user = null;
+    req.session.isLoggedIn = false;
+    await req.session.save();
+    return res.status(200).json({
+      user: req.session.user,
+      isLoggedIn: req.session.isLoggedIn,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};

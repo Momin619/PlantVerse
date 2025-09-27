@@ -7,7 +7,7 @@ import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { api } from "./services/api/api";
 import { useUser } from "./context/UserContext";
 import Loader from "./components/ui/Loader";
-
+import PageNotFound from "./components/ui/PageNotFound";
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -44,6 +44,7 @@ export default function App() {
       <Route path="/" element={<HomePage />} />
       <Route path="/auth/signup" element={<SignupPage />} />
       <Route path="/auth/login" element={<LoginPage />} />
+      <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
 }
