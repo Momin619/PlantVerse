@@ -3,14 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
 import { useUser } from "../../context/UserContext";
 import { api } from "../../services/api/api";
-
+import Loader from "../ui/Loader";
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { isLoggedIn, user, setIsLoggedIn, setUser } = useUser();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   // 🔑 Logout handler
   const handleLogout = async () => {
+    setLoading(true);
     try {
       await api.post("/auth/logout");
       setUser(null);
@@ -18,8 +20,12 @@ export const Navbar = () => {
       navigate("/auth/login");
     } catch (err) {
       console.error("Logout failed:", err);
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) return <Loader />;
 
   return (
     <nav className="fixed top-0 z-50 w-full bg-white/10 backdrop-blur-md border-b border-white/20 shadow-md transition-all duration-300">
@@ -50,7 +56,7 @@ export const Navbar = () => {
             {isLoggedIn ? (
               <button
                 onClick={handleLogout}
-                className="ml-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                className="cursor-pointer ml-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
               >
                 Logout
               </button>

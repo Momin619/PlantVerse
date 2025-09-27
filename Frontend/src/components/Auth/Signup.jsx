@@ -199,7 +199,7 @@ export default function Signup() {
             disabled={isSubmitting}
             value={isSubmitting ? "Submitting" : "Signup"}
             type="submit"
-            className="w-full bg-green-500 text-white font-semibold py-2 rounded-lg shadow-md hover:bg-green-600 transition-all"
+            className="cursor-pointer w-full bg-green-500 text-white font-semibold py-2 rounded-lg shadow-md hover:bg-green-600 transition-all"
           />
         </form>
 
