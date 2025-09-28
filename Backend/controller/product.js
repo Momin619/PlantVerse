@@ -1,4 +1,5 @@
 import Product from "../model/product.js";
+
 export const postAddProduct = async (req, res) => {
   try {
     if (!req.session.user) {
@@ -28,3 +29,5 @@ export const postAddProduct = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const getProducts = async (req, res) => {};

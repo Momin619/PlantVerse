@@ -35,7 +35,7 @@ export const Navbar = () => {
 
   // Define menu items based on role
   const commonRoutes = ["Home", "Products", "Cart", "About"];
-  const adminRoutes = ["Dashboard", "Add-Product"];
+  const adminRoutes = ["Add-Product", "Products"];
 
   // Dynamic styles
   const navBg = isAdminRoute ? "bg-white" : "bg-white/10 backdrop-blur-md";
@@ -66,8 +66,8 @@ export const Navbar = () => {
                   <Link
                     key={item}
                     to={
-                      item === "Dashboard"
-                        ? "/admin/dashboard"
+                      item === "Products"
+                        ? "/admin/products"
                         : "/admin/add-product"
                     }
                     className={`relative ${linkColor} transition-colors group`}
