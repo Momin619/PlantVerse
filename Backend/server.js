@@ -12,6 +12,7 @@ import session from "express-session";
 
 import connectMongodbSession from "connect-mongodb-session";
 env.config();
+import path from "path";
 
 // Local modules
 
@@ -64,6 +65,8 @@ app.get("/user-auth", (req, res) => {
 });
 
 app.use(express.json());
+
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.use(authRouter);
 app.use(productRouter);
