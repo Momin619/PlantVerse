@@ -24,6 +24,7 @@ const AddProduct = () => {
       formData.append("stock", data.stock);
       formData.append("description", data.description);
       formData.append("image", data.image[0]);
+      formData.append("price", data.price);
 
       const res = await api.post("/admin/add-product", formData, {
         headers: {
@@ -35,7 +36,7 @@ const AddProduct = () => {
       reset(); // Reset form
 
       // Redirect to admin dashboard
-      redirect("/admin/dashboard");
+      redirect("/admin/products");
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to add product ❌");
     } finally {
@@ -120,6 +121,25 @@ const AddProduct = () => {
                 <p className="text-red-500 font-bold">
                   {errors.description.message}
                 </p>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Price
+              </label>
+              <input
+                {...register("price", {
+                  required: "Price is required",
+                })}
+                placeholder="Enter product price"
+                className={`mt-1 w-full px-4 py-2 border rounded-lg focus:outline-none resize-none ${
+                  errors.price
+                    ? "border-red-500 focus:ring-2 focus:ring-red-400"
+                    : "border-green-500 focus:ring-2 focus:ring-green-400"
+                }`}
+              />
+              {errors.price && (
+                <p className="text-red-500 font-bold">{errors.price.message}</p>
               )}
             </div>
 

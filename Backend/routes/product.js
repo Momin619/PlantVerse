@@ -1,6 +1,6 @@
 import express from "express";
 
-import { postAddProduct } from "../controller/product.js";
+import { postAddProduct, getProducts } from "../controller/product.js";
 import { isAdmin } from "../controller/auth.js";
 
 import { upload } from "../utils/multer.js";
@@ -13,5 +13,7 @@ productRouter.post(
   upload.single("image"),
   postAddProduct
 );
+
+productRouter.get("/admin/products", getProducts);
 
 export default productRouter;

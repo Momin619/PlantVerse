@@ -6,7 +6,7 @@ export const postAddProduct = async (req, res) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const { name, stock, description } = req.body;
+    const { name, stock, description, price } = req.body;
 
     if (!req.file) {
       return res.status(400).json({ message: "Image is required" });
@@ -20,6 +20,7 @@ export const postAddProduct = async (req, res) => {
       description,
       image: imagePath,
       createdBy: req.session.user.id,
+      price,
     });
 
     await product.save();
@@ -30,4 +31,13 @@ export const postAddProduct = async (req, res) => {
   }
 };
 
-export const getProducts = async (req, res) => {};
+export const getProducts = async (req, res) => {
+  try {
+    const products = await Product.find();
+    console.log(products);
+    return res.status(200).json({ products });
+  } catch (error) {
+    return res.status(404);
+    console.log(error);
+  }
+};

@@ -23,6 +23,10 @@ const ProductSchema = mongoose.Schema(
       ref: "User",
       required: true,
     },
+    price: {
+      required: true,
+      type: Number,
+    },
   },
   { timestamps: true }
 );

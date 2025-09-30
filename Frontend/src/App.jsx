@@ -14,6 +14,7 @@ import PageNotFound from "./components/ui/PageNotFound";
 import AddProductPage from "./pages/Admin/AddProductPage";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import ProductPage from "./pages/Admin/ProductsPage";
 export default function App() {
   const loading = useSessionCheck();
 
@@ -52,6 +53,14 @@ export default function App() {
           element={
             <AdminRoute>
               <AddProductPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/products"
+          element={
+            <AdminRoute>
+              <ProductPage />
             </AdminRoute>
           }
         />
