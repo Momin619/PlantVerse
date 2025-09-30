@@ -5,6 +5,7 @@ import {
   getProducts,
   getEditProduct,
   putEditProduct,
+  deleteProduct,
 } from "../controller/product.js";
 import { isAdmin } from "../controller/auth.js";
 
@@ -28,5 +29,7 @@ productRouter.put(
   upload.single("image"),
   putEditProduct
 );
+
+productRouter.delete("/admin/delete-product/product/:id", deleteProduct);
 
 export default productRouter;

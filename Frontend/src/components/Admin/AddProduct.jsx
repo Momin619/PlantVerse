@@ -5,9 +5,9 @@ import Loader from "../ui/Loader";
 import { toast } from "react-toastify";
 import { Navbar } from "../ui/Navbar";
 import { useNavigate } from "react-router-dom";
+import FormLoader from "../ui/FormLoader";
 const AddProduct = () => {
   const redirect = useNavigate();
-  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -16,8 +16,6 @@ const AddProduct = () => {
   } = useForm({ mode: "onChange" });
 
   const onSubmit = async (data) => {
-    setLoading(true);
-
     try {
       const formData = new FormData();
       formData.append("name", data.name);
@@ -39,12 +37,8 @@ const AddProduct = () => {
       redirect("/admin/products");
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to add product ❌");
-    } finally {
-      setLoading(false);
     }
   };
-
-  if (loading) return <Loader />;
 
   return (
     <>
@@ -171,7 +165,11 @@ const AddProduct = () => {
               disabled={isSubmitting}
               className="cursor-pointer w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
             >
-              {isSubmitting ? "Submitting..." : "Add Product"}
+              {isSubmitting ? (
+                <FormLoader text="Creating Product..." />
+              ) : (
+                "Add Product"
+              )}
             </button>
           </form>
         </div>

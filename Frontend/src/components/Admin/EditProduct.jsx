@@ -1,15 +1,15 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { api } from "../../services/api/api";
 import Loader from "../ui/Loader";
 import { toast } from "react-toastify";
 import { Navbar } from "../ui/Navbar";
 import { useNavigate, useParams } from "react-router-dom";
+import FormLoader from "../ui/FormLoader";
 const EditProduct = () => {
   const { id } = useParams();
 
   const redirect = useNavigate();
-  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -37,7 +37,6 @@ const EditProduct = () => {
     fetchProduct();
   }, []);
   const onSubmit = async (data) => {
-    setLoading(true);
     try {
       const formData = new FormData();
 
@@ -61,12 +60,8 @@ const EditProduct = () => {
     } catch (err) {
       toast.error("Failed to Edit Product");
       console.error("❌ Error updating product:", err);
-    } finally {
-      setLoading(false);
     }
   };
-
-  if (loading) return <Loader />;
 
   return (
     <>
@@ -191,7 +186,11 @@ const EditProduct = () => {
               disabled={isSubmitting}
               className="cursor-pointer w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
             >
-              {isSubmitting ? "Submitting..." : "Edit Product"}
+              {isSubmitting ? (
+                <FormLoader text="Editing Product..." />
+              ) : (
+                "Edit Product"
+              )}
             </button>
           </form>
         </div>

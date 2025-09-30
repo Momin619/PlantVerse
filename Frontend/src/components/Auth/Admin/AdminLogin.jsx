@@ -26,7 +26,7 @@ const AdminLogin = () => {
       setUser(res.data.user);
       setIsLoggedIn(res.data.isLoggedIn);
       toast.success("Login successful! Welcome back Admin 🌱");
-      redirect("/admin/dashboard");
+      redirect("/admin/products");
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed ❌");
     } finally {

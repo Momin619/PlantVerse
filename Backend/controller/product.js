@@ -91,3 +91,13 @@ export const putEditProduct = async (req, res, next) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const deleteProduct = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const product = await Product.findByIdAndDelete(id);
+    return res.status(200).json({ message: "Product deleted" });
+  } catch (error) {
+    console.log(error);
+  }
+};

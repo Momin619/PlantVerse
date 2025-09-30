@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Loader from "../ui/Loader";
 import { Navbar } from "../ui/Navbar";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -25,6 +26,20 @@ export default function Products() {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  const handleDeleteProduct = async (id) => {
+    setLoading(true);
+    try {
+      await api.delete(`/admin/delete-product/product/${id}`);
+      setProducts((prev) => prev.filter((product) => product._id !== id));
+      toast.success("Product Deleted Successfully");
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to Delete Product");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) return <Loader />;
 
@@ -76,6 +91,16 @@ export default function Products() {
                 >
                   Edit Product
                 </Link>
+                <button
+                  onClick={() => {
+                    handleDeleteProduct(product._id);
+                  }}
+                  className=" cursor-pointer w-full my-5 text-center rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white 
+                   shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 
+                   focus:ring-offset-1 transition"
+                >
+                  Delete Product
+                </button>
               </div>
             ))}
           </div>
