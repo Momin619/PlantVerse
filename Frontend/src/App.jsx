@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useParams } from "react-router-dom";
 import { useSessionCheck } from "./hooks/useSessionCheck";
 import Loader from "./components/ui/Loader";
 import { AdminRoute } from "./components/Admin/AdminRoute";
@@ -14,10 +14,11 @@ import PageNotFound from "./components/ui/PageNotFound";
 import AddProductPage from "./pages/Admin/AddProductPage";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-import ProductPage from "./pages/Admin/ProductsPage";
+import ProductsPage from "./pages/Admin/ProductsPage";
+import EditProductPage from "./pages/Admin/EditProductPage";
 export default function App() {
   const loading = useSessionCheck();
-
+  const { id } = useParams();
   if (loading) return <Loader />;
 
   return (
@@ -60,7 +61,15 @@ export default function App() {
           path="/admin/products"
           element={
             <AdminRoute>
-              <ProductPage />
+              <ProductsPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path={`/admin/edit-product/product/:id`}
+          element={
+            <AdminRoute>
+              <EditProductPage />
             </AdminRoute>
           }
         />

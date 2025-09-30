@@ -3,6 +3,7 @@ import { api } from "../../services/api/api";
 import { useState, useEffect } from "react";
 import Loader from "../ui/Loader";
 import { Navbar } from "../ui/Navbar";
+import { Link } from "react-router-dom";
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -42,20 +43,39 @@ export default function Products() {
             {products.map((product) => (
               <div
                 key={product._id}
-                className="bg-white shadow-lg rounded-2xl p-4 hover:shadow-xl transition duration-300"
+                className="bg-white shadow-md hover:shadow-xl rounded-2xl p-5 flex flex-col justify-between transition duration-300"
               >
+                {/* Image */}
                 {product.image && (
                   <img
                     src={`http://localhost:3500${product.image}`}
                     alt={product.name}
-                    className="w-full h-40 object-cover rounded-lg mb-3"
+                    className="w-full h-48 object-cover rounded-xl mb-4"
                   />
                 )}
-                <h3 className="text-lg font-semibold text-gray-800 mb-1">
-                  {product.name}
-                </h3>
-                <p className="text-gray-600 mb-2">{product.description}</p>
-                <p className="text-green-600 font-bold">Rs. {product.price}</p>
+
+                {/* Content */}
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2 truncate">
+                    {product.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                    {product.description}
+                  </p>
+                  <p className="text-green-600 font-bold text-lg mb-4">
+                    Rs. {product.price}
+                  </p>
+                </div>
+
+                {/* Button */}
+                <Link
+                  to={`/admin/edit-product/product/${product._id}`}
+                  className="w-full text-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white 
+                   shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 
+                   focus:ring-offset-1 transition"
+                >
+                  Edit Product
+                </Link>
               </div>
             ))}
           </div>
