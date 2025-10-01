@@ -1,5 +1,6 @@
 import Product from "../model/product.js";
-
+import path from "path";
+import fs from "fs";
 export const postAddProduct = async (req, res) => {
   try {
     if (!req.session.user) {
@@ -94,10 +95,35 @@ export const putEditProduct = async (req, res, next) => {
 
 export const deleteProduct = async (req, res, next) => {
   try {
-    const id = req.params.id;
-    const product = await Product.findByIdAndDelete(id);
-    return res.status(200).json({ message: "Product deleted" });
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Delete image file if exists
+    console.log(product);
+
+    if (product.image) {
+      // Assuming product.image = "/uploads/filename.jpg"
+      const imagePath = path.join(process.cwd(), product.image);
+      // Adjust "public" if your uploads folder is somewhere else
+
+      fs.unlink(imagePath, (err) => {
+        if (err) {
+          console.error("Failed to delete image:", err);
+        } else {
+          console.log("Image deleted:", imagePath);
+        }
+      });
+    }
+
+    // Delete product from DB
+    await product.deleteOne();
+
+    res.json({ message: "Product and image deleted successfully" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };
