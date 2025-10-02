@@ -1,6 +1,9 @@
 import Product from "../model/product.js";
+
 import path from "path";
+
 import fs from "fs";
+
 export const postAddProduct = async (req, res) => {
   try {
     if (!req.session.user) {
