@@ -68,6 +68,8 @@ app.use(express.json());
 
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
+console.log(1);
+
 app.use(authRouter);
 app.use(productRouter);
 
