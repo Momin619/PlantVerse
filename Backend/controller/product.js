@@ -10,7 +10,7 @@ export const postAddProduct = async (req, res) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const { name, stock, description, price } = req.body;
+    const { name, stock, description, price, type, category } = req.body;
 
     if (!req.file) {
       return res.status(400).json({ message: "Image is required" });
@@ -25,6 +25,8 @@ export const postAddProduct = async (req, res) => {
       image: imagePath,
       createdBy: req.session.user.id,
       price,
+      type,
+      category,
     });
 
     await product.save();
@@ -70,13 +72,15 @@ export const putEditProduct = async (req, res, next) => {
     }
 
     // Destructure data from request body
-    const { name, stock, description, price } = req.body;
+    const { name, stock, description, price, type, category } = req.body;
 
     // Update product fields
-    product.name = name || product.name;
-    product.stock = stock || product.stock;
-    product.description = description || product.description;
-    product.price = price || product.price;
+    product.name = name ?? product.name;
+    product.stock = stock ?? product.stock;
+    product.description = description ?? product.description;
+    product.price = price ?? product.price;
+    product.type = type ?? product.type;
+    product.category = category ?? product.category;
 
     // If a new image is uploaded, update it, otherwise keep the old one
     if (req.file) {

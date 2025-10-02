@@ -27,6 +27,16 @@ const ProductSchema = mongoose.Schema(
       required: true,
       type: Number,
     },
+    type: {
+      required: true,
+      type: String,
+      enum: ["Indoor", "Outdoor", "Herbal"],
+    },
+    category: {
+      required: true,
+      type: String,
+      enum: ["Seasonal", "Permanent"],
+    },
   },
   { timestamps: true }
 );

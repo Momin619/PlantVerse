@@ -6,7 +6,7 @@ export const ProtectedRoute = ({ children }) => {
 
   if (!isLoggedIn) return <Navigate to="/auth/login" replace />;
   if (isLoggedIn && user.role === "admin")
-    return <Navigate to="/admin/dashboard" replace />;
+    return <Navigate to="/admin/products" replace />;
 
   return children;
 };

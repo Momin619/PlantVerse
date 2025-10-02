@@ -1,11 +1,10 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { api } from "../../services/api/api";
-import Loader from "../ui/Loader";
 import { toast } from "react-toastify";
 import { Navbar } from "../ui/Navbar";
 import { useNavigate } from "react-router-dom";
 import FormLoader from "../ui/FormLoader";
+
 const AddProduct = () => {
   const redirect = useNavigate();
   const {
@@ -23,17 +22,15 @@ const AddProduct = () => {
       formData.append("description", data.description);
       formData.append("image", data.image[0]);
       formData.append("price", data.price);
+      formData.append("type", data.type);
+      formData.append("category", data.category);
 
-      const res = await api.post("/admin/add-product", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      await api.post("/admin/add-product", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       toast.success("Product added successfully!");
-      reset(); // Reset form
-
-      // Redirect to admin dashboard
+      reset();
       redirect("/admin/products");
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to add product ❌");
@@ -43,7 +40,6 @@ const AddProduct = () => {
   return (
     <>
       <Navbar />
-
       <div className="min-h-screen flex my-14 items-center justify-center bg-gray-100 p-4">
         <div className="w-full max-w-lg bg-white p-8 rounded-2xl shadow-lg">
           <h2 className="text-3xl font-bold text-center text-green-700 mb-6">
@@ -68,6 +64,53 @@ const AddProduct = () => {
               />
               {errors.name && (
                 <p className="text-red-500 font-bold">{errors.name.message}</p>
+              )}
+            </div>
+
+            {/* Type Dropdown */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Type
+              </label>
+              <select
+                {...register("type", { required: "Type is required" })}
+                className={`mt-1 w-full px-4 py-2 border rounded-lg focus:outline-none ${
+                  errors.type
+                    ? "border-red-500 focus:ring-2 focus:ring-red-400"
+                    : "border-green-500 focus:ring-2 focus:ring-green-400"
+                }`}
+              >
+                <option value="">Select type</option>
+                <option value="Indoor">Indoor</option>
+                <option value="Outdoor">Outdoor</option>
+                <option value="Herbal">Herbal</option>
+              </select>
+              {errors.type && (
+                <p className="text-red-500 font-bold">{errors.type.message}</p>
+              )}
+            </div>
+
+            {/* Category Dropdown */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Category
+              </label>
+              <select
+                {...register("category", { required: "Category is required" })}
+                className={`mt-1 w-full px-4 py-2 border rounded-lg focus:outline-none ${
+                  errors.category
+                    ? "border-red-500 focus:ring-2 focus:ring-red-400"
+                    : "border-green-500 focus:ring-2 focus:ring-green-400"
+                }`}
+              >
+                <option value="">Select category</option>
+                <option value="Seasonal">Seasonal</option>
+                <option value="Permanent">Permanent</option>
+              </select>
+              {errors.category && (
+                <p className="text-red-500 font-bold">
+                  {errors.category.message}
+                </p>
               )}
             </div>
 
@@ -104,12 +147,12 @@ const AddProduct = () => {
                   required: "Description is required",
                 })}
                 placeholder="Enter product description"
+                rows={4}
                 className={`mt-1 w-full px-4 py-2 border rounded-lg focus:outline-none resize-none ${
                   errors.description
                     ? "border-red-500 focus:ring-2 focus:ring-red-400"
                     : "border-green-500 focus:ring-2 focus:ring-green-400"
                 }`}
-                rows={4}
               />
               {errors.description && (
                 <p className="text-red-500 font-bold">
@@ -117,16 +160,17 @@ const AddProduct = () => {
                 </p>
               )}
             </div>
+
+            {/* Price */}
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Price
               </label>
               <input
-                {...register("price", {
-                  required: "Price is required",
-                })}
+                type="number"
+                {...register("price", { required: "Price is required" })}
                 placeholder="Enter product price"
-                className={`mt-1 w-full px-4 py-2 border rounded-lg focus:outline-none resize-none ${
+                className={`mt-1 w-full px-4 py-2 border rounded-lg focus:outline-none ${
                   errors.price
                     ? "border-red-500 focus:ring-2 focus:ring-red-400"
                     : "border-green-500 focus:ring-2 focus:ring-green-400"
@@ -159,7 +203,7 @@ const AddProduct = () => {
               )}
             </div>
 
-            {/* Submit Button */}
+            {/* Submit */}
             <button
               type="submit"
               disabled={isSubmitting}
