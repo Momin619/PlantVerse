@@ -5,7 +5,7 @@ export const AdminRoute = ({ children }) => {
   const { user, isLoggedIn } = useUser();
 
   if (!isLoggedIn) return <Navigate to="/auth/admin-login" replace />;
-  if (user.role !== "admin") return <Navigate to="/" replace />;
+  if (user.role !== "admin") return <Navigate to="/auth/login" replace />;
 
   return children;
 };

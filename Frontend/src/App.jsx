@@ -18,14 +18,20 @@ import ProductsPage from "./pages/Admin/ProductsPage";
 import EditProductPage from "./pages/Admin/EditProductPage";
 export default function App() {
   const loading = useSessionCheck();
-  const { id } = useParams();
   if (loading) return <Loader />;
 
   return (
     <>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<HomePage />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/auth/signup" element={<SignupPage />} />
         <Route path="/auth/login" element={<LoginPage />} />
         <Route path="/auth/admin-login" element={<AdminLoginPage />} />
