@@ -133,3 +133,13 @@ export const deleteProduct = async (req, res, next) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const getProduct = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const product = await Product.findOne({ _id: id });
+    return res.status(200).json({ product });
+  } catch (error) {
+    console.log(error);
+  }
+};

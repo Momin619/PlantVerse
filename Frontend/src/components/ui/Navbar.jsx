@@ -26,6 +26,7 @@ export const Navbar = () => {
       navigate(isAdminRoute ? "/auth/admin-login" : "/auth/login");
     } catch (err) {
       toast.error("Logout failed ❌");
+      return err;
     } finally {
       setLoading(false);
     }

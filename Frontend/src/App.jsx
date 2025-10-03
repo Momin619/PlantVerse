@@ -17,6 +17,7 @@ import { ToastContainer } from "react-toastify";
 import AdminProductsPage from "./pages/Admin/AdminProductsPage";
 import EditProductPage from "./pages/Admin/EditProductPage";
 import ProductsPage from "./pages/User/ProductsPage";
+import ProductsDetailsPage from "./pages/User/ProductsDetailsPage";
 export default function App() {
   const loading = useSessionCheck();
   if (loading) return <Loader fullscreen={true} />;
@@ -38,6 +39,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/product-detail/product/:id"
+          element={
+            <ProtectedRoute>
+              <ProductsDetailsPage />
             </ProtectedRoute>
           }
         />

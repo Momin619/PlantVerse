@@ -273,6 +273,9 @@
   .my-10 {
     margin-block: calc(var(--spacing) * 10);
   }
+  .my-12 {
+    margin-block: calc(var(--spacing) * 12);
+  }
   .my-14 {
     margin-block: calc(var(--spacing) * 14);
   }
@@ -347,6 +350,9 @@
   }
   .h-48 {
     height: calc(var(--spacing) * 48);
+  }
+  .h-80 {
+    height: calc(var(--spacing) * 80);
   }
   .h-\[2px\] {
     height: 2px;

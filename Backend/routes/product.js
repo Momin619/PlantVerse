@@ -6,6 +6,7 @@ import {
   getEditProduct,
   putEditProduct,
   deleteProduct,
+  getProduct,
 } from "../controller/product.js";
 import { isAdmin } from "../controller/auth.js";
 
@@ -33,5 +34,7 @@ productRouter.put(
 productRouter.delete("/admin/delete-product/product/:id", deleteProduct);
 
 productRouter.get("/products", getProducts);
+
+productRouter.get("/product-detail/product/:id", getProduct);
 
 export default productRouter;
