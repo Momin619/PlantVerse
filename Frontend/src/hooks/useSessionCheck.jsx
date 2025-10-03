@@ -18,30 +18,60 @@ export const useSessionCheck = () => {
         setUser(user);
         setIsLoggedIn(isLoggedIn);
 
+        // Debug logging
+        console.log(
+          "[useSessionCheck] PATH:",
+          location.pathname,
+          "isLoggedIn:",
+          isLoggedIn,
+          "role:",
+          user?.role
+        );
+
+        // Define public routes
         const publicUserRoutes = ["/auth/login", "/auth/signup"];
         const publicAdminRoutes = ["/auth/admin-login"];
-        const publicRoutes = [...publicUserRoutes, ...publicAdminRoutes];
 
+        const isPublic =
+          publicUserRoutes.some((route) =>
+            location.pathname.startsWith(route)
+          ) ||
+          publicAdminRoutes.some((route) =>
+            location.pathname.startsWith(route)
+          );
+
+        // Guest (not logged in)
         if (!isLoggedIn) {
-          if (!publicRoutes.includes(location.pathname)) {
+          if (!isPublic) {
             if (location.pathname.startsWith("/admin")) {
+              console.log("[Redirect] Guest → Admin Login");
               navigate("/auth/admin-login", { replace: true });
             } else {
+              console.log("[Redirect] Guest → User Login");
               navigate("/auth/login", { replace: true });
             }
           }
         } else {
-          // Prevent logged-in users from accessing login pages
+          // Logged in ADMIN trying to access user auth pages
           if (
             user.role === "admin" &&
-            publicUserRoutes.includes(location.pathname)
+            publicUserRoutes.some((route) =>
+              location.pathname.startsWith(route)
+            )
           ) {
+            console.log("[Redirect] Admin → Admin Dashboard");
             navigate("/admin/dashboard", { replace: true });
           }
+
+          // Logged in USER trying to access admin auth or signup
           if (
             user.role === "user" &&
-            publicAdminRoutes.includes(location.pathname)
+            (publicAdminRoutes.some((route) =>
+              location.pathname.startsWith(route)
+            ) ||
+              location.pathname.startsWith("/auth/signup"))
           ) {
+            console.log("[Redirect] User → Home");
             navigate("/", { replace: true });
           }
         }

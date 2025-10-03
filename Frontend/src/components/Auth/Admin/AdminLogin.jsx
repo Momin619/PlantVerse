@@ -25,7 +25,7 @@ const AdminLogin = () => {
       const res = await api.post("/auth/admin-login", data);
       setUser(res.data.user);
       setIsLoggedIn(res.data.isLoggedIn);
-      toast.success("Login successful! Welcome back Admin 🌱");
+      toast.success("Login successful! Welcome Admin");
       redirect("/admin/products");
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed ❌");

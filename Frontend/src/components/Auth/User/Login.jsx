@@ -26,7 +26,7 @@ const Login = () => {
       const res = await api.post("/auth/login", data);
       setUser(res.data.user);
       setIsLoggedIn(res.data.isLoggedIn);
-      toast.success("Login successful! Welcome back 🌱");
+      toast.success("Login successful!");
       redirect("/");
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed ❌");
