@@ -1,4 +1,4 @@
-import { Routes, Route, useParams } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { useSessionCheck } from "./hooks/useSessionCheck";
 import Loader from "./components/ui/Loader";
 import { AdminRoute } from "./components/Admin/AdminRoute";
@@ -14,8 +14,9 @@ import PageNotFound from "./components/ui/PageNotFound";
 import AddProductPage from "./pages/Admin/AddProductPage";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-import ProductsPage from "./pages/Admin/ProductsPage";
+import AdminProductsPage from "./pages/Admin/AdminProductsPage";
 import EditProductPage from "./pages/Admin/EditProductPage";
+import ProductsPage from "./pages/User/ProductsPage";
 export default function App() {
   const loading = useSessionCheck();
   if (loading) return <Loader fullscreen={true} />;
@@ -24,6 +25,14 @@ export default function App() {
     <>
       <Routes>
         {/* Public Routes */}
+        <Route
+          path="/products"
+          element={
+            <ProtectedRoute>
+              <ProductsPage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/"
           element={
@@ -67,7 +76,7 @@ export default function App() {
           path="/admin/products"
           element={
             <AdminRoute>
-              <ProductsPage />
+              <AdminProductsPage />
             </AdminRoute>
           }
         />

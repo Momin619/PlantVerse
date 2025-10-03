@@ -14,7 +14,7 @@ export const Navbar = () => {
   const [loading, setLoading] = useState(false);
 
   const isAdminRoute = location.pathname.startsWith("/admin");
-
+  const isProductsRoute = location.pathname === "/products";
   // 🔑 Logout handler
   const handleLogout = async () => {
     setLoading(true);
@@ -38,11 +38,21 @@ export const Navbar = () => {
   const adminRoutes = ["Add-Product", "Products"];
 
   // Dynamic styles
-  const navBg = isAdminRoute ? "bg-white" : "bg-white/10 backdrop-blur-md";
-  const linkColor = isAdminRoute
+  const isWhiteBg = isAdminRoute || isProductsRoute; // apply white for both
+  const navBg = isWhiteBg ? "bg-white" : "bg-white/10 backdrop-blur-md";
+  const linkColor = isWhiteBg
     ? "text-black hover:text-green-600"
     : "text-white hover:text-green-200";
+  const logoPlantColor = "text-green-500"; // always green
+  let logoVerseColor = "text-white"; // default
 
+  if (isProductsRoute) {
+    logoVerseColor = "text-black"; // products page
+  } else if (isAdminRoute) {
+    logoVerseColor = "text-black"; // admin routes
+  } else if (location.pathname === "/") {
+    logoVerseColor = "text-white"; // home page
+  }
   return (
     <nav
       className={`fixed top-0 z-50 w-full border-b border-white/20 shadow-md transition-all duration-300 ${navBg}`}
@@ -56,7 +66,8 @@ export const Navbar = () => {
               isAdminRoute ? "text-black" : "text-white"
             }`}
           >
-            <span className="text-green-500">Plant</span>Verse
+            <span className={logoPlantColor}>Plant</span>
+            <span className={logoVerseColor}>Verse</span>
           </Link>
 
           {/* Desktop Menu */}

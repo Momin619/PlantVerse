@@ -44,7 +44,6 @@ export const getProducts = async (req, res) => {
     return res.status(200).json({ products });
   } catch (error) {
     return res.status(404);
-    console.log(error);
   }
 };
 

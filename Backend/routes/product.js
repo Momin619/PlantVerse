@@ -32,4 +32,6 @@ productRouter.put(
 
 productRouter.delete("/admin/delete-product/product/:id", deleteProduct);
 
+productRouter.get("/products", getProducts);
+
 export default productRouter;

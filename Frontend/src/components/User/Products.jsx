@@ -27,26 +27,12 @@ export default function Products() {
     fetchProducts();
   }, []);
 
-  const handleDeleteProduct = async (id) => {
-    setLoading(true);
-    try {
-      await api.delete(`/admin/delete-product/product/${id}`);
-      setProducts((prev) => prev.filter((product) => product._id !== id));
-      toast.success("Product Deleted Successfully");
-    } catch (error) {
-      console.log(error);
-      toast.error("Failed to Delete Product");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   if (loading) return <Loader fullscreen={true} />;
 
   return (
     <>
       <Navbar />
-      <div className="p-6 bg-gray-100 min-h-screen">
+      <div className="p-6 my-10 bg-gray-100 min-h-screen">
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
           Products
         </h2>
@@ -83,24 +69,6 @@ export default function Products() {
                 </div>
 
                 {/* Button */}
-                <Link
-                  to={`/admin/edit-product/product/${product._id}`}
-                  className="w-full text-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white 
-                   shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 
-                   focus:ring-offset-1 transition"
-                >
-                  Edit Product
-                </Link>
-                <button
-                  onClick={() => {
-                    handleDeleteProduct(product._id);
-                  }}
-                  className=" cursor-pointer w-full my-5 text-center rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white 
-                   shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 
-                   focus:ring-offset-1 transition"
-                >
-                  Delete Product
-                </button>
               </div>
             ))}
           </div>

@@ -1,10 +1,10 @@
 import React from "react";
-import Products from "../../components/Admin/Products";
+import AdminProducts from "../../components/Admin/AdminProducts";
 export default function ProductsPage() {
   return (
     <>
       {" "}
-      <Products />{" "}
+      <AdminProducts />{" "}
     </>
   );
 }
