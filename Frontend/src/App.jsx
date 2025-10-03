@@ -18,7 +18,7 @@ import ProductsPage from "./pages/Admin/ProductsPage";
 import EditProductPage from "./pages/Admin/EditProductPage";
 export default function App() {
   const loading = useSessionCheck();
-  if (loading) return <Loader />;
+  if (loading) return <Loader fullscreen={true} />;
 
   return (
     <>

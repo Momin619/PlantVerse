@@ -9,7 +9,7 @@ import { useUser } from "../../../context/UserContext";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 const Login = () => {
-  const { user, setUser, isLoggedIn, setIsLoggedIn } = useUser();
+  const { setUser, setIsLoggedIn } = useUser();
   const [loading, setLoading] = useState(false);
   const redirect = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -34,7 +34,7 @@ const Login = () => {
       setLoading(false);
     }
   };
-  if (loading) return <Loader />;
+  if (loading) return <Loader fullscreen={true} />;
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-50 to-green-100 px-4">

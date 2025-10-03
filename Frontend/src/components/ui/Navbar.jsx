@@ -31,7 +31,7 @@ export const Navbar = () => {
     }
   };
 
-  if (loading) return <Loader />;
+  if (loading) return <Loader fullscreen={true} />;
 
   // Define menu items based on role
   const commonRoutes = ["Home", "Products", "Cart", "About"];
