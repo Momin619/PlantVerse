@@ -20,14 +20,14 @@ export const postSignUp = async (req, res, next) => {
 export const postLogin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-
+    const error_message = "Invalid email or password";
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404);
+      return res.status(404).json({ message: error_message });
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Passwords are not matched" });
+      return res.status(400).json({ message: error_message });
     }
     const userData = {
       id: user._id,
