@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useUser } from "../context/UserContext";
+import { useUser } from "../context/user/UserContext";
 import { api } from "../services/api/api";
 
 export const useSessionCheck = () => {

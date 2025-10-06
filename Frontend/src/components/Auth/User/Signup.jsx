@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { api } from "../../../services/api/api";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Loader from "../../ui/Loader";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -16,7 +16,12 @@ export default function Signup() {
     handleSubmit,
     watch,
     formState: { errors, isSubmitting },
+    setFocus,
   } = useForm({ mode: "onChange" });
+
+  useEffect(() => {
+    setFocus("fullName");
+  }, [setFocus]);
 
   const onSubmit = async (data) => {
     delete data.confirmPassword;

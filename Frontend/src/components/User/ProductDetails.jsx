@@ -3,11 +3,19 @@ import { api } from "../../services/api/api";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FiHeart, FiSearch, FiShoppingCart } from "react-icons/fi";
+import { useRef } from "react";
 
 export default function ProductDetails() {
+  const imageRef = useRef();
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
+
+  const zoomImage = () => {
+    if (imageRef.current) {
+      imageRef.current.classList.toggle("scale-110");
+    }
+  };
 
   const fetchProduct = async () => {
     setLoading(true);
@@ -35,10 +43,11 @@ export default function ProductDetails() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* Product Image Section */}
         <div className="relative group">
-          <div className="w-full h-96 overflow-hidden rounded-xl bg-gray-100 shadow-md transition-transform duration-300 group-hover:scale-[1.02] group-hover:shadow-2xl">
+          <div className="w-full h-96 overflow-hidden rounded-xl bg-gray-100 shadow-md transition-transform duration-300 group-hover:scale-[1.02] group-hover:shadow-2xl ">
             <img
               src={`http://localhost:3500${product.image}`}
               alt={product.name}
+              ref={imageRef}
               className="w-full h-full object-contain p-4"
             />
           </div>
@@ -46,12 +55,15 @@ export default function ProductDetails() {
           {/* Floating Icons */}
           <div className="absolute top-4 right-4 flex flex-col gap-3 opacity-0 group-hover:opacity-100 transition">
             {/* Favorite Button */}
-            <button className="p-2 bg-white rounded-full shadow hover:bg-red-100 transition">
+            <button className="cursor-pointer p-2 bg-white rounded-full shadow hover:bg-red-100 transition">
               <FiHeart className="w-6 h-6 text-red-500" />
             </button>
 
             {/* Zoom Button */}
-            <button className="p-2 bg-white rounded-full shadow hover:bg-blue-100 transition">
+            <button
+              onClick={zoomImage}
+              className="cursor-pointer p-2 bg-white rounded-full shadow hover:bg-blue-100 transition"
+            >
               <FiSearch className="w-6 h-6 text-blue-500" />
             </button>
           </div>

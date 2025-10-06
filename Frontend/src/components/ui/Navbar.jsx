@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
-import { useUser } from "../../context/UserContext";
+import { useUser } from "../../context/user/UserContext";
 import { api } from "../../services/api/api";
 import Loader from "../ui/Loader";
 import { toast } from "react-toastify";

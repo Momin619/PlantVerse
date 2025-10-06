@@ -15,6 +15,7 @@ const UserSchema = mongoose.Schema({
     required: true,
   },
   role: { type: String, enum: ["user", "admin"], default: "user" }, // 👈 role
+  favourites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
 });
 
 export default mongoose.model("User", UserSchema);
