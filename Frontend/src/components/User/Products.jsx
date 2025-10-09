@@ -60,7 +60,7 @@ export default function Products() {
                         ? removeFavourite(product._id)
                         : addFavourite(product._id)
                     }
-                    className={`absolute top-3 right-3 p-2 rounded-full shadow transition ${
+                    className={`cursor-pointer absolute top-3 right-3 p-2 rounded-full shadow transition ${
                       isFavourite ? "bg-red-100" : "bg-white hover:bg-red-50"
                     }`}
                   >

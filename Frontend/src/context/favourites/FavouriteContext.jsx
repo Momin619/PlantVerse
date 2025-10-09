@@ -1,78 +1,72 @@
-import { useContext, createContext, useEffect, useReducer } from "react";
+import { useEffect, useContext, createContext, useReducer } from "react";
 import { api } from "../../services/api/api";
-import { favouriteReducer, initialState } from "./favouriteReducer.js";
-
-const FavouritesContext = createContext();
+export const FavouriteContext = createContext();
+import { initialState, formReducer } from "./favouriteReducer.js";
 
 export default function FavouriteProvider({ children }) {
-  const [state, dispatch] = useReducer(favouriteReducer, initialState);
+  const [state, dispatch] = useReducer(formReducer, initialState);
 
-  // 🧠 Fetch favourites once on mount
-  useEffect(() => {
-    const fetchFavourites = async () => {
-      try {
-        dispatch({ type: "LOADING" });
-        const res = await api.get("/favourites", { withCredentials: true });
-        dispatch({ type: "SET_FAVOURITES", payload: res.data.favourites });
-      } catch (error) {
-        console.error("Failed to fetch favourites:", error);
-      } finally {
-        dispatch({ type: "DONE_LOADING" });
-      }
-    };
-    fetchFavourites();
-  }, []);
-
-  // 🟢 Add favourite (instant update)
-  const addFavourite = async (productId) => {
+  const fetchFavourites = async () => {
+    dispatch({ type: "SET_LOADING_TRUE" });
     try {
-      const res = await api.post(
-        `/favourite-product/product/${productId}`,
-        {},
-        { withCredentials: true }
-      );
-
-      // ✅ Update state instantly (no need to refetch)
-      dispatch({
-        type: "ADD_FAVOURITE",
-        payload: res.data.product || { _id: productId }, // fallback
-      });
+      const res = await api.get("/favourites");
+      const favourites = res.data.favourites;
+      dispatch({ type: "SET_FAVOURITES", payload: favourites });
     } catch (error) {
-      console.error("Add favourite error:", error);
+      console.log(error);
+    } finally {
+      dispatch({ type: "SET_LOADING_FALSE" });
     }
   };
 
-  // 🔴 Remove favourite (instant update)
-  const removeFavourite = async (productId) => {
-    try {
-      await api.delete(`/remove-favourite/favourite/${productId}`, {
-        withCredentials: true,
-      });
+  useEffect(() => {
+    fetchFavourites();
+  }, []);
 
-      // ✅ Remove immediately from UI
-      dispatch({
-        type: "REMOVE_FAVOURITE",
-        payload: productId,
-      });
+  const addFavourite = async (id) => {
+    const fakeFavourite = { _id: id };
+    dispatch({ type: "ADD_FAVOURITES", payload: fakeFavourite });
+    try {
+      const res = await api.post(`/favourite-product/product/${id}`);
+      const favourite = res?.data?.favourites;
+      if (favourite && favourite._id) {
+        dispatch({ type: "ADD_FAVOURITES", payload: favourite });
+      }
     } catch (error) {
-      console.error("Remove favourite error:", error);
+      console.log(error);
+    }
+  };
+  const removeFavourite = async (id) => {
+    // Optimistic UI update (remove instantly)
+    const previousFavourites = [...state.favourites];
+    dispatch({ type: "REMOVE_FAVOURITE", payload: id });
+
+    try {
+      const res = await api.delete(`/remove-favourite/favourite/${id}`);
+      if (res.status !== 200) {
+        throw new Error("Failed to remove from server");
+      }
+    } catch (error) {
+      console.error("Error removing favourite:", error);
+
+      // Rollback only if the server truly failed
+      dispatch({ type: "SET_FAVOURITES", payload: previousFavourites });
     }
   };
 
   return (
-    <FavouritesContext.Provider
+    <FavouriteContext.Provider
       value={{
-        favourites: state.favourites,
-        loading: state.loading,
+        ...state,
+        fetchFavourites,
         addFavourite,
         removeFavourite,
       }}
     >
-      {children}
-    </FavouritesContext.Provider>
+      {" "}
+      {children}{" "}
+    </FavouriteContext.Provider>
   );
 }
 
-export function useFavourites() {
-  return useContext(FavouritesContext);
-}
+export const useFavourites = () => useContext(FavouriteContext);
