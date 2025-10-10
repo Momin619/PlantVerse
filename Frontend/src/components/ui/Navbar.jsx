@@ -14,7 +14,7 @@ export const Navbar = () => {
   const [loading, setLoading] = useState(false);
 
   const isAdminRoute = location.pathname.startsWith("/admin");
-  const isProductsRoute = location.pathname === "/products";
+  const isProductsRoute = location.pathname === "/products" || "/favourites";
   // 🔑 Logout handler
   const handleLogout = async () => {
     setLoading(true);
@@ -35,7 +35,7 @@ export const Navbar = () => {
   if (loading) return <Loader fullscreen={true} />;
 
   // Define menu items based on role
-  const commonRoutes = ["Home", "Products", "Cart", "About"];
+  const commonRoutes = ["Home", "About", "Cart", "Products", "Favourites"];
   const adminRoutes = ["Add-Product", "Products"];
 
   // Dynamic styles

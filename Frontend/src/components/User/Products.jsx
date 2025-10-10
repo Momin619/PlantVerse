@@ -44,7 +44,11 @@ export default function Products() {
         ) : (
           <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {products.map((product) => {
-              const isFavourite = favourites.includes(product._id);
+              const isFavourite = favourites.some(
+                (fav) =>
+                  (typeof fav === "string" && fav === product._id) ||
+                  (fav && fav._id === product._id)
+              );
 
               return (
                 <div

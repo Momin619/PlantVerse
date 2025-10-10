@@ -18,6 +18,7 @@ import AdminProductsPage from "./pages/Admin/AdminProductsPage";
 import EditProductPage from "./pages/Admin/EditProductPage";
 import ProductsPage from "./pages/User/ProductsPage";
 import ProductsDetailsPage from "./pages/User/ProductsDetailsPage";
+import FavouritesPage from "./pages/User/FavouritesPage";
 export default function App() {
   const loading = useSessionCheck();
   if (loading) return <Loader fullscreen={true} />;
@@ -31,6 +32,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <ProductsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/favourites"
+          element={
+            <ProtectedRoute>
+              <FavouritesPage />
             </ProtectedRoute>
           }
         />

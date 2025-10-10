@@ -13,9 +13,7 @@ export default function FavouriteProvider({ children }) {
     dispatch({ type: "SET_LOADING_TRUE" });
     try {
       const res = await api.get("/favourites");
-      const favourites = res.data.favourites.map((f) =>
-        typeof f === "object" ? f._id : f
-      );
+      const favourites = res.data.favourites;
       dispatch({ type: "SET_FAVOURITES", payload: favourites });
     } catch (error) {
       console.log("Fetch Favourites Error:", error);

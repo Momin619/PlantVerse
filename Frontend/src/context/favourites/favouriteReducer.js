@@ -15,7 +15,9 @@ export const formReducer = (state, action) => {
     case "REMOVE_FAVOURITE":
       return {
         ...state,
-        favourites: state.favourites.filter((id) => id !== action.payload),
+        favourites: state.favourites.filter(
+          (id) => id !== action.payload && id._id !== action.payload
+        ),
       };
 
     case "SET_LOADING_TRUE":
