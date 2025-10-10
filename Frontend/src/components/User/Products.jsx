@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { api } from "../../services/api/api";
-import Loader from "../ui/Loader";
-import { Navbar } from "../ui/Navbar";
 import { Link } from "react-router-dom";
 import { FiArrowRight, FiHeart } from "react-icons/fi";
 import { useFavourites } from "../../context/favourites/FavouriteContext";
+import Loader from "../ui/Loader";
+import { Navbar } from "../ui/Navbar";
 
 export default function Products() {
   const { favourites, addFavourite, removeFavourite, loading } =
     useFavourites();
-
   const [products, setProducts] = useState([]);
   const [productLoading, setProductLoading] = useState(false);
 
+  // Fetch all products
   const fetchProducts = async () => {
     setProductLoading(true);
     try {
       const res = await api.get("/admin/products");
       setProducts(res.data.products);
     } catch (error) {
-      console.log(error);
+      console.log("Product Fetch Error:", error);
     } finally {
       setProductLoading(false);
     }
@@ -44,16 +44,14 @@ export default function Products() {
         ) : (
           <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {products.map((product) => {
-              const isFavourite = favourites.some((f) => f._id === product._id);
+              const isFavourite = favourites.includes(product._id);
 
               return (
                 <div
                   key={product._id}
-                  className="relative bg-white shadow-md hover:shadow-2xl 
-                           rounded-2xl p-5 flex flex-col justify-between 
-                           transition-transform duration-300 hover:scale-105"
+                  className="relative bg-white shadow-md hover:shadow-2xl rounded-2xl p-5 flex flex-col justify-between transition-transform duration-300 hover:scale-105"
                 >
-                  {/* Favourite Button */}
+                  {/* ❤️ Favourite Button */}
                   <button
                     onClick={() =>
                       isFavourite
@@ -71,7 +69,7 @@ export default function Products() {
                     />
                   </button>
 
-                  {/* Image */}
+                  {/* 🖼 Product Image */}
                   {product.image && (
                     <img
                       src={`http://localhost:3500${product.image}`}
@@ -80,7 +78,7 @@ export default function Products() {
                     />
                   )}
 
-                  {/* Content */}
+                  {/* 📄 Product Info */}
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold text-gray-900 mb-2 truncate">
                       {product.name}
@@ -93,13 +91,10 @@ export default function Products() {
                     </p>
                   </div>
 
-                  {/* View Details Button */}
+                  {/* 🔗 View Details */}
                   <Link
                     to={`/product-detail/product/${product._id}`}
-                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 
-                               rounded-lg bg-gradient-to-r from-green-500 to-green-600 
-                               text-white font-medium transition-all duration-300 
-                               hover:from-green-600 hover:to-green-700 hover:translate-x-1 shadow-md"
+                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-gradient-to-r from-green-500 to-green-600 text-white font-medium transition-all duration-300 hover:from-green-600 hover:to-green-700 hover:translate-x-1 shadow-md"
                   >
                     <span>View Details</span>
                     <FiArrowRight className="w-5 h-5" />

@@ -1,19 +1,24 @@
-import { useEffect, useContext, createContext, useReducer } from "react";
+import { createContext, useReducer, useEffect, useContext } from "react";
+import { toast } from "react-toastify";
 import { api } from "../../services/api/api";
+import { initialState, formReducer } from "./favouriteReducer";
+
 export const FavouriteContext = createContext();
-import { initialState, formReducer } from "./favouriteReducer.js";
 
 export default function FavouriteProvider({ children }) {
   const [state, dispatch] = useReducer(formReducer, initialState);
 
+  // 🔹 Fetch favourites from backend
   const fetchFavourites = async () => {
     dispatch({ type: "SET_LOADING_TRUE" });
     try {
       const res = await api.get("/favourites");
-      const favourites = res.data.favourites;
+      const favourites = res.data.favourites.map((f) =>
+        typeof f === "object" ? f._id : f
+      );
       dispatch({ type: "SET_FAVOURITES", payload: favourites });
     } catch (error) {
-      console.log(error);
+      console.log("Fetch Favourites Error:", error);
     } finally {
       dispatch({ type: "SET_LOADING_FALSE" });
     }
@@ -23,48 +28,41 @@ export default function FavouriteProvider({ children }) {
     fetchFavourites();
   }, []);
 
+  // 🔹 Add favourite
   const addFavourite = async (id) => {
-    const fakeFavourite = { _id: id };
-    dispatch({ type: "ADD_FAVOURITES", payload: fakeFavourite });
     try {
-      const res = await api.post(`/favourite-product/product/${id}`);
-      const favourite = res?.data?.favourites;
-      if (favourite && favourite._id) {
-        dispatch({ type: "ADD_FAVOURITES", payload: favourite });
-      }
+      dispatch({ type: "ADD_FAVOURITE", payload: id });
+      toast.success("Added to favourites");
+      await api.post(`/favourite-product/product/${id}`);
     } catch (error) {
-      console.log(error);
+      console.log("Add Favourite Error:", error);
+      toast.error("Failed to add favourite");
     }
   };
+
+  // 🔹 Remove favourite
   const removeFavourite = async (id) => {
-    // Optimistic UI update (remove instantly)
-    const previousFavourites = [...state.favourites];
-    dispatch({ type: "REMOVE_FAVOURITE", payload: id });
-
     try {
-      const res = await api.delete(`/remove-favourite/favourite/${id}`);
-      if (res.status !== 200) {
-        throw new Error("Failed to remove from server");
-      }
+      dispatch({ type: "REMOVE_FAVOURITE", payload: id });
+      toast.info("Removed from favourites");
+      await api.delete(`/remove-favourite/favourite/${id}`);
     } catch (error) {
-      console.error("Error removing favourite:", error);
-
-      // Rollback only if the server truly failed
-      dispatch({ type: "SET_FAVOURITES", payload: previousFavourites });
+      console.log("Remove Favourite Error:", error);
+      toast.error("Failed to remove favourite");
     }
   };
 
   return (
     <FavouriteContext.Provider
       value={{
-        ...state,
+        favourites: state.favourites,
+        loading: state.loading,
         fetchFavourites,
         addFavourite,
         removeFavourite,
       }}
     >
-      {" "}
-      {children}{" "}
+      {children}
     </FavouriteContext.Provider>
   );
 }
