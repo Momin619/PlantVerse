@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { HeartOff } from "lucide-react";
 import Loader from "../ui/Loader";
 import { Navbar } from "../ui/Navbar";
+import { FaHeartBroken } from "react-icons/fa";
 export default function FavouritesPage() {
   const { favourites, loading, fetchFavourites, removeFavourite } =
     useFavourites();
@@ -31,17 +32,16 @@ export default function FavouritesPage() {
         ) : (
           <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {favourites.map((product) => (
-              <motion.div
+              <div
                 key={product._id}
-                className="bg-white shadow-md rounded-2xl p-4 flex flex-col justify-between"
-                whileHover={{ scale: 1.03 }}
-                transition={{ type: "spring", stiffness: 200 }}
+                className="bg-white shadow-md rounded-2xl p-4 flex flex-col justify-between hover:scale-[1.03] transition-transform duration-300"
               >
                 <img
-                  src={product.image || "/placeholder.jpg"}
+                  src={`http://localhost:3500${product.image}`}
                   alt={product.name}
-                  className="w-full h-48 object-cover rounded-xl mb-3"
+                  className="w-full h-48 object-contain rounded-xl mb-3 bg-gray-50"
                 />
+
                 <h2 className="text-lg font-semibold text-gray-800">
                   {product.name}
                 </h2>
@@ -54,12 +54,13 @@ export default function FavouritesPage() {
                   </span>
                   <button
                     onClick={() => removeFavourite(product._id)}
-                    className="text-red-500 hover:text-red-600 transition"
+                    className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-lg bg-red-100 hover:bg-red-200 text-red-600 font-medium transition-all duration-300 shadow-sm hover:shadow-md"
                   >
-                    Remove 💔
+                    <FaHeartBroken className="text-lg" />
+                    <span>Remove</span>
                   </button>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         )}
