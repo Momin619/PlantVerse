@@ -22,6 +22,8 @@ import productRouter from "./routes/product.js";
 
 import favouriteRouter from "./routes/favourite.js";
 
+import cartRouter from "./routes/cart.js";
+
 const PORT = process.env.PORT;
 
 const MONGO_URI = process.env.MONGO_URI;
@@ -75,6 +77,7 @@ console.log(1);
 app.use(authRouter);
 app.use(productRouter);
 app.use(favouriteRouter);
+app.use(cartRouter);
 mongoose
   .connect(MONGO_URI)
   .then(() => {

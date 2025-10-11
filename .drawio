@@ -1,0 +1,49 @@
+<mxfile host="65bd71144e">
+    <diagram id="BQHr_e2gsLju68dZK1cr" name="Page-1">
+        <mxGraphModel dx="1000" dy="419" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="4" value="user clicks on add to cart button" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+                    <mxGeometry x="292" y="60" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="" style="endArrow=classic;html=1;" edge="1" parent="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="411.5" y="120" as="sourcePoint"/>
+                        <mxPoint x="411.5" y="170" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="411.5" y="170"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="16" value="the api will be called based on the product id and product gets added to the cart&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+                    <mxGeometry x="242" y="170" width="340" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="users will be able to change quantity , remove from cart" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+                    <mxGeometry x="222" y="280" width="380" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" value="" style="endArrow=classic;html=1;" edge="1" parent="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="411.5" y="230" as="sourcePoint"/>
+                        <mxPoint x="411.5" y="280" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="411.5" y="280"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="19" value="when users clicks on order now api will be called and request to stripe for payment&amp;nbsp;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+                    <mxGeometry x="192" y="390" width="440" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" value="" style="endArrow=classic;html=1;" edge="1" parent="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="411.5" y="340" as="sourcePoint"/>
+                        <mxPoint x="411.5" y="390" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="411.5" y="390"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

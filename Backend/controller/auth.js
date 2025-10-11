@@ -107,3 +107,22 @@ export const isAdmin = (req, res, next) => {
   }
   return res.status(403).json({ message: "Access denied. Admins only." });
 };
+
+export const protect = async (req, res, next) => {
+  try {
+    if (!req.session?.user?.id) {
+      return res.status(401).json({ message: "Not authorized, please login" });
+    }
+
+    const user = await User.findById(req.session.user.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    req.user = user;
+    next();
+  } catch (error) {
+    console.error("Auth middleware error:", error);
+    res.status(401).json({ message: "Not authorized" });
+  }
+};
