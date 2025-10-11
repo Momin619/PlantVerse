@@ -66,7 +66,6 @@ const Login = () => {
                   },
                 })}
                 placeholder="Enter your email"
-                required
                 className={`pl-10 w-full px-4 py-2 border rounded-lg focus:outline-none ${
                   errors.email
                     ? "border-red-500 focus:ring-2 focus:ring-red-400"
