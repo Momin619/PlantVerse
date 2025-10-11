@@ -1,104 +1,136 @@
-import User from "../model/user.js";
 import Cart from "../model/cart.js";
 import Product from "../model/product.js";
 
-export const addToCart = async (req, res, next) => {
+// 🛒 Add to Cart
+export const addToCart = async (req, res) => {
   try {
-    const userId = req.user._id; // ✅ from protect middleware
-    const productId = req.params.id;
-    const product = await Product.findById(productId);
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    if (!product) return res.status(404).json({ message: "Product not found" });
 
-    let cart = await Cart.findOne({ user: userId });
+    let cart = await Cart.findOne({ user: req.user._id }).populate(
+      "items.product"
+    );
 
     if (!cart) {
-      cart = new Cart({
-        user: userId,
-        items: [{ product: productId, quantity: 1 }],
-        totalPrice: product.price,
-      });
+      cart = new Cart({ user: req.user._id, items: [] });
+    }
+
+    const existingItem = cart.items.find(
+      (item) => item.product._id.toString() === id
+    );
+
+    if (existingItem) {
+      existingItem.quantity += 1;
     } else {
-      const itemIndex = cart.items.findIndex(
-        (item) => item.product.toString() === productId
-      );
-
-      if (itemIndex > -1) {
-        cart.items[itemIndex].quantity += 1;
-      } else {
-        cart.items.push({ product: productId, quantity: 1 });
-      }
-
-      cart.totalPrice = await calculateTotal(cart.items);
+      cart.items.push({ product: id, quantity: 1 });
     }
 
     await cart.save();
-    res.status(200).json({ success: true, cart });
-  } catch (err) {
-    next(err);
+    await cart.populate("items.product");
+
+    const totalPrice = cart.items.reduce(
+      (acc, item) => acc + item.product.price * item.quantity,
+      0
+    );
+
+    res.json({ cart: { items: cart.items, totalPrice } });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
-async function calculateTotal(items) {
-  let total = 0;
-  for (const item of items) {
-    const product = await Product.findById(item.product);
-    total += product.price * item.quantity;
-  }
-  return total;
-}
-
-export const removeFromCart = async (req, res, next) => {
+// ❌ Remove from Cart
+export const removeFromCart = async (req, res) => {
   try {
-    const userId = req.user._id;
-    const productId = req.params.id;
+    const { id } = req.params;
+    const cart = await Cart.findOne({ user: req.user._id }).populate(
+      "items.product"
+    );
 
-    const cart = await Cart.findOne({ user: userId });
     if (!cart) return res.status(404).json({ message: "Cart not found" });
 
-    const itemIndex = cart.items.findIndex(
-      (item) => item.product.toString() === productId
+    cart.items = cart.items.filter(
+      (item) => item.product._id.toString() !== id
     );
-    if (itemIndex === -1)
-      return res.status(404).json({ message: "Product not in cart" });
 
-    if (cart.items[itemIndex].quantity > 1) {
-      cart.items[itemIndex].quantity -= 1;
-    } else {
-      cart.items.splice(itemIndex, 1);
+    await cart.save();
+    await cart.populate("items.product");
+
+    const totalPrice = cart.items.reduce(
+      (acc, item) => acc + item.product.price * item.quantity,
+      0
+    );
+
+    res.json({ cart: { items: cart.items, totalPrice } });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// 📦 Get Cart
+export const getCart = async (req, res) => {
+  try {
+    const cart = await Cart.findOne({ user: req.user._id }).populate(
+      "items.product"
+    );
+
+    if (!cart) {
+      return res.json({ cart: { items: [], totalPrice: 0 } });
     }
 
-    cart.totalPrice = await calculateTotal(cart.items);
-    await cart.save();
-
-    res.status(200).json({ success: true, cart });
-  } catch (err) {
-    next(err);
-  }
-};
-
-export const getCart = async (req, res, next) => {
-  try {
-    const userId = req.user._id;
-    const cart = await Cart.findOne({ user: userId }).populate(
-      "items.product",
-      "name price image"
+    const totalPrice = cart.items.reduce(
+      (acc, item) => acc + item.product.price * item.quantity,
+      0
     );
 
-    if (!cart) return res.status(404).json({ message: "Cart empty" });
-    res.status(200).json({ success: true, cart });
-  } catch (err) {
-    next(err);
+    res.json({ cart: { items: cart.items, totalPrice } });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
-export const clearCart = async (req, res, next) => {
+// 🔁 Update Quantity (+/-)
+export const updateQuantity = async (req, res) => {
   try {
-    const userId = req.user._id;
-    await Cart.findOneAndDelete({ user: userId });
-    res.status(200).json({ success: true, message: "Cart cleared" });
-  } catch (err) {
-    next(err);
+    const { id } = req.params;
+    const { action } = req.body;
+
+    const cart = await Cart.findOne({ user: req.user._id }).populate(
+      "items.product"
+    );
+    if (!cart) return res.status(404).json({ message: "Cart not found" });
+
+    const item = cart.items.find((item) => item.product._id.toString() === id);
+
+    if (!item) return res.status(404).json({ message: "Item not found" });
+
+    if (action === "increase") {
+      item.quantity += 1;
+    } else if (action === "decrease") {
+      item.quantity = Math.max(item.quantity - 1, 1);
+    }
+
+    await cart.save();
+    await cart.populate("items.product");
+
+    const totalPrice = cart.items.reduce(
+      (acc, item) => acc + item.product.price * item.quantity,
+      0
+    );
+
+    res.json({ cart: { items: cart.items, totalPrice } });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// 🧹 Clear Cart
+export const clearCart = async (req, res) => {
+  try {
+    await Cart.findOneAndUpdate({ user: req.user._id }, { items: [] });
+    res.json({ cart: { items: [], totalPrice: 0 } });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

@@ -2,24 +2,26 @@ import Loader from "../ui/Loader";
 import { api } from "../../services/api/api";
 import { useParams } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import { FiHeart, FiSearch, FiShoppingCart, FiCheck } from "react-icons/fi";
-import useCart from "../../hooks/cart/useCart"; // ✅ import your hook
+import { FiHeart, FiSearch, FiShoppingCart } from "react-icons/fi";
+import useCart from "../../hooks/cart/useCart"; // ✅ useCart hook
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ProductDetails() {
   const imageRef = useRef();
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(false);
-  const [added, setAdded] = useState(false); // ✅ for feedback
   const { id } = useParams();
+  const { addToCart } = useCart(); // ✅ get addToCart
 
-  const { addToCart } = useCart(); // ✅ get the addToCart function
-
+  // 🔍 Image Zoom
   const zoomImage = () => {
     if (imageRef.current) {
       imageRef.current.classList.toggle("scale-110");
     }
   };
 
+  // 📦 Fetch product details
   const fetchProduct = async () => {
     setLoading(true);
     try {
@@ -27,18 +29,20 @@ export default function ProductDetails() {
       setProduct(res.data.product);
     } catch (error) {
       console.log(error);
+      toast.error("Failed to fetch product details");
     } finally {
       setLoading(false);
     }
   };
 
+  // 🛒 Handle Add to Cart
   const handleAddToCart = async () => {
     try {
       await addToCart(product._id);
-      setAdded(true);
-      setTimeout(() => setAdded(false), 2000);
+      toast.success(`${product.name} added to cart!`);
     } catch (error) {
       console.error("Error adding to cart:", error);
+      toast.error("Failed to add product to cart 😞");
     }
   };
 
@@ -53,7 +57,7 @@ export default function ProductDetails() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* Product Image Section */}
         <div className="relative group">
-          <div className="w-full h-96 overflow-hidden rounded-xl bg-gray-100 shadow-md transition-transform duration-300 group-hover:scale-[1.02] group-hover:shadow-2xl ">
+          <div className="w-full h-96 overflow-hidden rounded-xl bg-gray-100 shadow-md transition-transform duration-300 group-hover:scale-[1.02] group-hover:shadow-2xl">
             <img
               src={`http://localhost:3500${product.image}`}
               alt={product.name}
@@ -95,24 +99,10 @@ export default function ProductDetails() {
           {/* Add to Cart Button */}
           <button
             onClick={handleAddToCart}
-            disabled={added}
-            className={`inline-flex items-center gap-2 px-6 py-3 font-medium rounded-lg shadow-md transition ${
-              added
-                ? "bg-green-600 text-white cursor-default"
-                : "bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700 hover:scale-105"
-            }`}
+            className="cursor-pointer inline-flex items-center gap-2 px-6 py-3 font-medium rounded-lg shadow-md bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700 hover:scale-105 transition"
           >
-            {added ? (
-              <>
-                <FiCheck className="w-5 h-5" />
-                Added to Cart
-              </>
-            ) : (
-              <>
-                <FiShoppingCart className="w-5 h-5" />
-                Add to Cart
-              </>
-            )}
+            <FiShoppingCart className="w-5 h-5" />
+            Add to Cart
           </button>
         </div>
       </div>
